@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {stepVehicle,selectGear} from '../src/simulation.js';
+const car={x:0,z:0,speed:0,heading:0,steer:0,distance:0,gear:'D'};
+assert(selectGear(car,'R'),'reverse can be selected at rest');
+for(let i=0;i<120;i++)stepVehicle(car,{throttle:true,steer:0},1/60);
+assert(car.speed<0&&car.z<0,'reverse acceleration must move behind the car');
+assert(!selectGear(car,'D'),'cannot shift direction while moving');
+const before=car.heading;
+for(let i=0;i<30;i++)stepVehicle(car,{throttle:true,steer:1},1/60);
+assert(car.heading<before,'reverse steering must produce the opposite yaw direction');
+for(let i=0;i<180;i++)stepVehicle(car,{brake:true,steer:0},1/60);
+assert.equal(Math.abs(car.speed),0,'reverse braking must stop without moving forward');
+assert(selectGear(car,'D'),'Drive can be selected after stopping');
+const stoppedZ=car.z;for(let i=0;i<120;i++)stepVehicle(car,{throttle:true,steer:0},1/60);
+assert(car.speed>0&&car.z>stoppedZ,'Drive must move forward after reversing');
+assert(!selectGear(car,'P'),'unknown gear is rejected');
+const limited={x:0,z:0,speed:0,heading:0,steer:0,distance:0,gear:'R'};for(let i=0;i<1800;i++)stepVehicle(limited,{throttle:true,steer:0},1/60);assert(Math.abs(limited.speed)<=5,'reverse is capped at 18 km/h');
+console.log('Reverse acceleration, steering, stopping, speed limit and gear interlock checks passed.');

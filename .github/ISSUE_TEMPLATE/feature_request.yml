@@ -1,0 +1,23 @@
+name: Feature request
+description: Suggest a focused simulator improvement
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Driver need
+      description: What driving or navigation problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: data
+    attributes:
+      label: Data source and accuracy
+      description: If map or traffic data is involved, identify its source, license, and expected accuracy.

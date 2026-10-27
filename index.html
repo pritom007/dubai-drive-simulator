@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dubai Drive · Real roads, real places</title>
+  <meta name="description" content="Practise driving through a connected Dubai Marina and JLT road network with real building footprints.">
+  <link rel="stylesheet" href="drive.css">
+  <link rel="stylesheet" href="cockpit.css">
+</head>
+<body>
+  <canvas id="scene" aria-label="3D driving scene"></canvas>
+  <header><div class="logo"><span>D/</span><div>DUBAI DRIVE<small>DRIVE WITH CONFIDENCE</small></div></div><div id="worldStatus">Preparing Dubai Marina…</div><button id="cameraButton">Driver view</button><button id="planButton">Plan a drive</button><button id="pauseButton" aria-label="Pause driving">Ⅱ</button></header>
+  <aside class="navigation"><div id="turnIcon">↑</div><div><small id="navLabel">YOUR NEXT MOVE</small><h1 id="instruction">Choose your destination</h1><p id="navDistance">Real roads. A calmer journey.</p></div><button id="voiceButton" aria-label="Toggle voice guidance" aria-pressed="true">◖))</button></aside>
+  <aside class="coach"><small>DRIVING COACH</small><h2 id="coachTitle">Start with a comfortable route</h2><p id="coachText">Choose two mapped places, then drive the roads that connect them.</p><div class="coachFooter"><span id="speedLimit">50</span><span id="currentRoad">Dubai Marina</span></div></aside>
+  <aside class="map"><canvas id="minimap" width="320" height="220" aria-label="Local route map"></canvas><span id="routeState">ROUTE PREVIEW</span><button id="audioButton" aria-pressed="false">Audio first</button></aside>
+  <section class="instruments"><div id="indicatorLeft">◀</div><div class="speed"><strong id="speed">0</strong><small>km/h</small></div><span id="gear">D</span><div id="indicatorRight">▶</div></section>
+  <section class="journey"><span><b id="remaining">—</b><small>REMAINING</small></span><div><i id="progress"></i></div><span><b id="score">100</b><small>SAFETY</small></span></section>
+  <footer><span>W / ↑ accelerate · S / ↓ brake · G select D/R · B look behind · C camera · Q E signal · Space pause · R retry</span><a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">© OpenStreetMap · ODbL</a><button id="dataButton">Map coverage & accuracy</button><span id="fps">— FPS</span></footer>
+  <section class="transmission" aria-label="Transmission"><button id="driveGear" aria-pressed="true">D</button><button id="reverseGear" aria-pressed="false">R</button><span id="gearHint">Stop to select gear · G</span><button id="lookBackButton" aria-pressed="false">Look behind · B</button></section>
+  <section class="pedals" aria-label="Driving controls"><div><button data-input="left" aria-label="Steer left">←</button><button data-input="right" aria-label="Steer right">→</button></div><div><button data-input="brake" aria-label="Brake">BRAKE</button><button data-input="throttle" aria-label="Accelerate">ACCEL</button></div></section>
+  <div id="toast" role="status"></div><div id="impact"></div>
+  <dialog id="planner">
+    <form id="routeForm"><button type="button" class="close" id="closePlanner" aria-label="Close route planner">×</button><small class="eyebrow">MARINA / JLT · REAL ROAD NETWORK</small><h2>Your next drive.</h2><p class="intro">Pick two buildings or places. We’ll find a connected driving route through the mapped streets.</p>
+      <label for="from">FROM</label><input id="from" list="places" value="Cayan Tower" autocomplete="off" required>
+      <label for="to">TO</label><input id="to" list="places" value="Almas Tower" autocomplete="off" required><datalist id="places"></datalist>
+      <p class="hint">Choose a building, enter latitude, longitude, or a 10-digit Makani number. Other Dubai routes load a corridor on demand. Place search: OpenStreetMap Nominatim; entrances: Dubai Municipality.</p>
+      <div class="preset"><button type="button" data-from="Cayan Tower" data-to="Almas Tower">Marina → JLT</button><button type="button" data-from="Dubai Marina Mall" data-to="Princess Tower">Local drive</button><button type="button" data-from="Cayan Tower" data-to="Dubai Mall">Marina → Dubai Mall</button></div>
+      <p id="routePreview" role="status">Loading the road network…</p><button class="primary" type="submit" id="startButton" disabled>Calculate route</button>
+      <details><summary>What is mapped here?</summary><p id="coverageText">Road connectivity and building footprints come from OpenStreetMap. Marina / JLT loads first; the Marina–Dubai Mall corridor is bundled and other Dubai corridors can load on demand. Lane positions are reconstructed; untagged building heights are estimated. Arrival is at a mapped drivable road access near the building or resolved entrance. It may still require a driveway or walk.</p><p>Online search sends the entered place to OpenStreetMap Nominatim; Makani numbers go to Dubai Municipality. New corridors use public OSRM and Overpass services. These prototype services can be busy or unavailable.</p></details>
+    </form>
+  </dialog>
+  <dialog id="report"><button class="close" id="closeReport" aria-label="Close report">×</button><small class="eyebrow" id="reportLabel">DRIVE PAUSED</small><h2 id="reportTitle">Take a breath.</h2><div class="stats"><div><strong id="reportScore">100</strong><small>SAFETY</small></div><div><strong id="reportDistance">0</strong><small>KM DRIVEN</small></div><div><strong id="reportIncidents">0</strong><small>INCIDENTS</small></div></div><p id="reportFeedback"></p><button class="primary" id="resumeButton">Resume driving</button><button class="secondary" id="retryButton">Retry this route</button></dialog>
+  <dialog id="dataDialog"><button class="close" id="closeData" aria-label="Close data details">×</button><small class="eyebrow">KNOW YOUR COVERAGE</small><h2>Built from the map.</h2><div id="dataDetails"></div><p>Every rendered branch follows a mapped way. Routes use shared OSM nodes, one-way directions, access tags and supported node-via turn restrictions. A geometric crossing alone never connects roads.</p><p>Lane geometry, estimated heights and building road-access points require further validation. This version cannot route to buildings outside its loaded area.</p><p>Makani entrance lookups are sourced from <a href="https://www.dm.gov.ae/open-data2/open-data-for-makani/" target="_blank" rel="noreferrer">Dubai Municipality</a> when you enter a Makani number. The number is sent to that official service for lookup. Official entrance records are kept separate from the OSM map; this app does not bundle a complete Makani address database.</p></dialog>
+  <script type="module" src="src/drive.js"></script>
+</body>
+</html>

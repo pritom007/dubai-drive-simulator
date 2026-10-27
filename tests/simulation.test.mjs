@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {stepVehicle,closestRoad,trafficStep,rectanglesOverlap,pathLength,projectToPath,orientedBoxesOverlap} from '../src/simulation.js';
+let car={x:0,z:0,heading:0,speed:0,steer:0,distance:0};for(let i=0;i<100;i++)stepVehicle(car,{throttle:true,brake:false,steer:0},.02);assert(car.speed>6&&car.speed<8&&car.z>6,'passenger-car progressive acceleration');
+const movingSpeed=car.speed;for(let i=0;i<30;i++)stepVehicle(car,{throttle:false,brake:true,steer:0},.02);assert(car.speed<movingSpeed-4,'progressive braking');
+const before=car.heading;for(let i=0;i<30;i++)stepVehicle(car,{throttle:true,brake:false,steer:1},.02);assert(car.heading>before,'continuous steering');
+const roads=[{points:[[0,0],[0,100]],lanes:3}];assert.equal(closestRoad({x:4,z:10},roads).distance,4);
+const lead={s:30,speed:5},follower={s:10,speed:15,targetSpeed:25};trafficStep(follower,lead,1);assert(follower.speed<15,'following vehicle brakes');
+assert(rectanglesOverlap({x:0,z:0,w:2,l:4},{x:1,z:2,w:2,l:4}));
+const path=[[0,0],[0,100],[100,100]];assert.equal(pathLength(path),200);const projected=projectToPath({x:5,z:40},path);assert.equal(projected.progress,40);assert.equal(projected.distance,5);assert(projected.remaining===160);
+assert(orientedBoxesOverlap({x:0,z:0,width:2,length:4,heading:0},{x:0,z:2,width:2,length:4,heading:.2}));assert(!orientedBoxesOverlap({x:0,z:0,width:2,length:4,heading:0},{x:8,z:8,width:2,length:4,heading:1}));
+console.log('11 simulation assertions passed');
